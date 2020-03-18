@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="./static/myJS.js"></script>
+<link rel="stylesheet" type="text/css" href="./static/myCSS.css">
+<html lang="zh-Hant">
+<head>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            loadTopSearch();
+            loadSideMenu();
+            textLenMAX('videoName', 150*2);
+        });
+        function openSideMenuForThisVideo(){
+            toggleSideMenu();
+            var _videoPath = document.getElementById('videoPath').innerHTML;
+            document.getElementById("editTagVideoName").style.color = "#FF5C0F";
+            document.getElementById('editTagVideoName').innerHTML = document.getElementById('videoName').innerHTML;
+
+            updateTagShow('showVideoTag', 'tagNum', './path/' + _videoPath, '');
+        }
+        function openDirectory(_directory){
+            var _xmlhttp;
+            _xmlhttp = new XMLHttpRequest();
+            _xmlhttp.onreadystatechange=function(){
+                if (_xmlhttp.readyState==4 && _xmlhttp.status==200){
+                    console.log('Open OK!');
+                }
+            }
+            _xmlhttp.open("GET","/openDirectory?directory="+_directory, true);
+            _xmlhttp.send();
+        }
+	</script>
+    <style type="text/css">
+        .mainVideoShowCSS{
+            width: 70%;
+            height: 100%;
+            text-align: center;
+            float: left;
+            border: solid 0px #000;
+        }
+        .recommendVideoCSS{
+            width: 29%;
+            height: 100%;
+            text-align: center;
+            float: right;
+            //border: solid 1px #CCC;
+            border-radius: 5px;
+        }
+        .videoInfoItem{
+            padding: 10px 5px;
+            color: #888;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0px 0px 0px rgba(20%,20%,20%,0.0);
+            transition: all 0.3s;
+        }
+        .videoInfoItem:hover{
+            border-radius: 3px;
+            color: #000;
+            box-shadow: 0px 0px 8px rgba(20%,20%,20%,0.5);
+        }
+        .mainVideoDiv{
+            text-align: center;
+            //border: solid 1px #CCC;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title> SecretCube</title>
+</head>
+<body class="mainCSS">
+<nav id="sideMenu" class="sideMenuCSS"></nav>
+<div id="topSearch" class="topSearchCSS"></div>
+<div id="mask" class="mask"></div>
+<div id="newWindow" class="newWindow">
+    <div id="showLog" class="showLog"></div>
+    <center>
+        <span id="btnBrowse" class="btnOK" onclick="setPlayerPath('selectPlayerPath')">自 訂</span>
+        <span id="btnOK" class="btnOK" onclick="location='index'">完 成</span>
+    </center>
+</div>
+<center>
+<div id="videoList" class="videoListCSS" style="width:90%;">
+    <div id="mainVideoShow" class="mainVideoShowCSS" style="text-align:left;font-size:17px;">
+        <div class="mainVideoDiv">
+            <video id="mainVideo" loop="loop" controls style="width:80%;height:80%;"
+                   poster="./static/pic/{{videoInfoToWeb[0]['videoName']}}.jpg">
+            <source src="{{videoPath}}" type="video/mp4">
+            </video>
+        </div>
+        <div id="videoName" style="font-size:20px;border:solid 0px;line-height:50px;">
+            {%raw videoInfoToWeb[0]['videoNameToHTML']%}
+        </div>
+        <div style="cursor:pointer;" onclick="openSideMenuForThisVideo()" class="videoInfoItem">
+            <span>標　籤(<span id="tagNum">{{len(videoInfoToWeb[0]['Tag'])}}</span>)：
+                <span id="videoTag">
+            {% for tagInd in range(len(videoInfoToWeb[0]['Tag'])) %}
+                {{videoInfoToWeb[0]['Tag'][tagInd]}},
+            {% end %}</span></span>
+        </div>
+        <div title="開啟資料夾" class="videoInfoItem" onclick="openDirectory('{{videoInfoToWeb[0]['videoInfo']['VideoAbsPath']}}')">
+            <span>影片路徑：<span id="videoPath">{{videoInfoToWeb[0]['videoInfo']['VideoAbsPath']}}</span></span>
+        </div>
+        <div class="videoInfoItem" style="cursor:default;">
+            <span>建立時間：{{videoInfoToWeb[0]['videoInfo']['CreateDate']}}</span>
+        </div>
+        <div class="videoInfoItem" style="cursor:default;">
+            <span>觀看次數：<span id="v_0">{{videoInfoToWeb[0]['Views']}}</span></span>
+        </div>
+        <div class="videoInfoItem" onclick="playByPlayer(['v_0',''], '{{videoInfoToWeb[0]['videoAbsLink']}}')">
+            <span style="color:#F00;">播放器播放</span>
+        </div>
+        <br>
+    </div>
+    <div id="recommendVideo" class="recommendVideoCSS">
+        <span style="text-align:left;margin:10px;">相 關 影 片</span>
+        <span style="display:none">
+        {% if len(relateVideoData)>10 %}
+        {{ _relateVideoShowNum = 10 }}
+        {% else %}
+        {{ _relateVideoShowNum = len(relateVideoData) }}
+        {% end %}
+        </span>
+        {% for videoID in range(_relateVideoShowNum) %}
+            <table class="videoInfoItem" style="margin:10px;" title="{%raw relateVideoData[videoID]['videoNameToHTML']%}"
+                   onclick="location='showVideo?videoPath={{relateVideoData[videoID]['videoAbsLink']}}'"
+                   onMouseOver="Control('start','{{videoID}}');"
+                   onMouseOut="Control('stop','{{videoID}}');">
+                <tr>
+                    <td style="width:150px; height:84px; background:#000;">
+                        <video id="{{videoID}}" muted loop="loop"
+                               poster="./static/pic/{{relateVideoData[videoID]['videoName']}}.jpg"
+                               width="150" height="84"
+                               style="cursor: pointer; vertical-align:middle;">
+                        <source src="./static/trailer/{{relateVideoData[videoID]['videoName']}}.mp4" type="video/mp4">
+                        </video>
+                    </td>
+                    <td style="text-align:left; vertical-align:top; width:200px; padding:5px;line-height:20px;">
+                        <div name="videoName" style="font-size:14px;font-weight:bold;">{%raw relateVideoData[videoID]['videoNameToHTML']%}</div>
+                        <div style="font-size:13px;color:#777;">影片長度：{{relateVideoData[videoID]['Duration']}}</div>
+                        <div style="font-size:13px;color:#777;">觀看次數：{{relateVideoData[videoID]['Views']}}</div>
+                        <div></div>
+                    </td>
+                </tr>
+            </table>
+        {% end %}
+    </div>
+
+</div>
+</center>
+</body>
+</html>

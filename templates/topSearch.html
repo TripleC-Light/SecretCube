@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<link rel=stylesheet type="text/css" href="/static/myCSS.css">
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Search</title>
+</head>
+<body class="mainCSS">
+<div id="loadTopSearch" style="vertical-align:middle;">
+    <table style="width:100%;">
+        <tr>
+            <td width="188">
+                <a href="reLocation"><img src="./static/Logo.png" width="188"></a>
+            </td>
+            <td style="text-align:center;">
+                <form action="index" method="get">
+                <input type="text" name="searchVideo" class="textBox" placeholder="在 {{fileNum}}部影片中搜尋..." style="font-family:'Noto Sans TC',sans-serif;" autocomplete="off"/>
+                <input type="submit" value="搜 尋" class="subMit"/>
+                </form>
+            </td>
+            <td style="width:100px; text-align:right;">
+                <div class="settingBtn" style="width:80px;" onclick="makeTrailer()">新增影片</div>
+            </td>
+            <td style="width:80px; text-align:right;">
+                <div onclick="toggleSideMenu()" class="settingBtn">設 定</div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

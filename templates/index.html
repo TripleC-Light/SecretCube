@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="./static/myJS.js"></script>
+<link rel="stylesheet" type="text/css" href="./static/myCSS.css">
+<html lang="zh-Hant">
+<head>
+    <script type="text/javascript">
+        $(document).ready(function (){
+            loadTopSearch();
+            loadSideMenu();
+            textLenMAX('videoName', 180*2);
+        });
+
+	</script>
+    <style>
+        .errMsg{
+            position: relative;
+            top: 50px;
+            left: 0px;
+            width: 150px;
+            height: 20px;
+            background: #FFF;
+            border: solid 2px #F00;
+            display: none;
+        }
+        .processDegree{
+            background: #008000;
+            height: 30px;
+            width: 0%;
+            border-radius: 5px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title> SecretCube</title>
+</head>
+<body class="mainCSS">
+<nav id="sideMenu" class="sideMenuCSS"></nav>
+<div id="topSearch" class="topSearchCSS"></div>
+<div id="mask" class="mask"></div>
+<div id="newWindow" class="newWindow">
+    <div id="showLog" class="showLog"></div>
+    <div id="processDegreeBorder" style="border:solid 1px;border-radius:5px;width:95%;margin:0px auto;margin-top:5px;"><div id="processDegree" class="processDegree"></div></div>
+    <center>
+        <span id="btnBrowse" class="btnOK" onclick="setPlayerPath('selectPlayerPath')">自 訂</span>
+        <span id="btnOK" class="btnOK" onclick="location='index'">完 成</span>
+    </center>
+</div>
+<center>
+<div class="videoNameCSS">Loading...</div>
+<div id="videoList" class="videoListCSS">
+    {% if searchVideo!='' %}
+        " {{searchVideo}} "　共找到 {{fileNum}}筆資料<br><br>
+    {% else %}
+        {% if fileNum==0 %}
+            <center><sapn class="addVideo"><br><br><br>目前尚無任何影片<br><br>請按&nbsp;<span class="settingBtn" style="font-size:22px;width:100px;height:35;" onclick="makeTrailer()">&nbsp;新增影片&nbsp;</span>&nbsp;進行新增</sapn></center>
+        {% end %}
+    {% end %}
+    {% if fileNum > 0 %}
+        排序：
+        <a href="index?searchVideo={{searchVideo}}&order=dbVideoName" style="cursor:pointer;text-decoration:none;">影片名稱</a>、
+        <a href="index?searchVideo={{searchVideo}}&order=Duration" style="cursor:pointer;text-decoration:none;">影片長度</a>、
+        <a href="index?searchVideo={{searchVideo}}&order=Views Desc" style="cursor:pointer;text-decoration:none;">觀看次數</a>、
+        <a href="index?searchVideo={{searchVideo}}&order=LastSeeDate Desc" style="cursor:pointer;text-decoration:none;">最後觀看時間</a>、
+        <a href="index?searchVideo={{searchVideo}}&order=ID" style="cursor:pointer;text-decoration:none;">隨機</a><br>
+    {% end %}
+
+    {%for i in range(0, layoutHTML['RowNum']) %}
+        {%for j in range(0,layoutHTML['ColumnNum']) %}
+        <span style="display:none;">{{ videoID = i*layoutHTML['ColumnNum']+j }}</span>
+            {% if videoID < fileNum %}
+            <table id="videoTable_{{videoID}}" name="videoTable" style="margin:5px 5px; display:inline-block;vertical-align:top;">
+                <tr>
+                    <td width="{{layoutHTML['VideoSize']['width']}}" bgcolor="#000000"><center>
+                        <div class="errMsg">遺 失 檔 案</div>
+                        <video id="{{videoID}}" muted loop="loop"
+                               onMouseOver="Control('start','{{videoID}}');"
+                               onMouseOut="Control('stop','{{videoID}}');"
+                               onclick="location='showVideo?videoPath={{videoInfoToWeb[videoID]['videoAbsLink']}}'"
+                               poster="./static/pic/{{videoInfoToWeb[videoID]['videoName']}}.jpg"
+                               width="{{layoutHTML['VideoSize']['width']}}" height="{{layoutHTML['VideoSize']['height']}}"
+                               style="cursor: pointer;">
+                        <source src="./static/trailer/{{videoInfoToWeb[videoID]['videoName']}}.mp4" type="video/mp4">
+                        </video>
+                    </center></td>
+                </tr>
+                <tr>
+                    <td class="videoNameCSS" width="{{layoutHTML['VideoSize']['width']}}" onclick="reDirect('showVideo?videoPath={{videoInfoToWeb[videoID]['videoAbsLink']}}')">
+                        <span name="videoName" id="videoName_{{videoID}}" title="{%raw videoInfoToWeb[videoID]['videoNameToHTML']%}">
+                            {%raw videoInfoToWeb[videoID]['videoNameToHTML']%}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <a class="palyByPlayer" onclick="playByPlayer(['v_{{videoID}}','lastSeeDate_{{videoID}}'], '{{videoInfoToWeb[videoID]['videoAbsLink']}}')">播放器播放</a>
+                            </td>
+                            <td style="text-align:right;"><span class="viewsFont" id="lastSeeDate_{{videoID}}">{{videoInfoToWeb[videoID]['videoInfo']['LastSeeDate']}}</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="viewsFont">觀看次數：<span id="v_{{videoID}}">{{videoInfoToWeb[videoID]['Views']}}</span></span>
+                            </td>
+                            <td style="text-align:right;">
+                                <span class="viewsFont">{{videoInfoToWeb[videoID]['Duration']}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="viewsFont" onclick="showVideoTag('tagID_{{videoID}}', '{{videoInfoToWeb[videoID]['videoAbsLink']}}')" colspan="2">
+                                <div id="tagTxtID_{{videoID}}" class="flipTag">
+                                標籤(<span id="tagID_{{videoID}}">{{len(videoInfoToWeb[videoID]['Tag'])}}</span>)
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    </td>
+                </tr>
+            </table>
+            {% end %}
+        {% end %}
+    {% end %}
+</div>
+</center>
+
+</body>
+</html>

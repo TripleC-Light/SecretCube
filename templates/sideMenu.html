@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<link rel=stylesheet type="text/css" href="/static/myCSS.css">
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>Side Menu</title>
+</head>
+<body>
+    <div style="color:#888;">
+        <div onclick="closeSideMenu()" class="closeMenu" style="user-select:none;">《&nbsp;&nbsp;</div>
+        <div class="selectItem">
+            <table style="width:100%;white-space:nowrap;">
+                <tr>
+                    <td style="width:30%;">影片數量：　</td>
+                    <td><span id="totalVideoNum"></span> 部</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:top;">掃描路徑：　</td>
+                    <td><div id="videoPathList" style="white-space:pre-wrap;"></div></td>
+                </tr>
+            </table>
+        </div>
+        <div class="selectItem" title="選擇播放器">
+            <table style="width:100%;white-space:nowrap;">
+                <tr onclick="setPlayerPathGUI()" style="cursor:pointer;">
+                    <td style="width:30%;vertical-align:top;">播 放 器 ：　</td>
+                    <td><span id="playerPath" style="color:#00F;white-space:pre-wrap;"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div class="selectItem">
+            <table>
+                <tr><td>標籤　<span id="clickEditTag" onclick="editAllTag()" style="cursor:pointer;">[編輯]</span><br></td></tr>
+                <tr><td><div id="editTagVideoName"></div></td></tr>
+                <tr><td>
+                    <span id="editTag">
+                    {% for tag in allTag %}
+                        <a class="tagBackGround" href="index?searchVideo={{tag}}" style="text-decoration:none;">{{tag}}</a>
+                    {% end %}
+                    </span><br>
+                </td></tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

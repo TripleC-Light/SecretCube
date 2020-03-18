@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<script type="text/javascript" src="/static/myJS.js"></script>
+<html>
+<head>
+    <style>
+        .editTagInput{
+            height: 20px;
+            width: 15%;
+            padding: 0px 5px;
+            border-radius: 5px;
+            margin: 0px -4px;
+            border: solid 1px;
+        }
+        .editDeleteTag{
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .deleteTagIcon{
+            color: #F00;
+            font-size: 9px;
+            font-weight: bold;
+            line-height: 10px;
+            text-align: center;
+            vertical-align: middle;
+            width: 10px;
+            height: 12px;
+            background: #FFF;
+            border-top: solid 1px #F00;
+            border-right: solid 0px #F00;
+            border-left: solid 1px #F00;
+            border-bottom: solid 1px #F00;
+            border-radius: 5px 0px 0px 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .changeTagIcon{
+            color: #00F;
+            font-size: 9px;
+            font-weight: bold;
+            line-height: 10px;
+            text-align: center;
+            vertical-align: middle;
+            width: 10px;
+            height: 12px;
+            background: #FFF;
+            border-top: solid 1px #00F;
+            border-right: solid 1px #00F;
+            border-left: solid 0px #00F;
+            border-bottom: solid 1px #00F;
+            border-radius: 0px 5px 5px 0px;
+            cursor: pointer;
+            display: none;
+        }
+        .addTagIcon{
+            font-size: 13px;
+            color: #00F;
+            font-weight: bold;
+            white-space: nowrap;
+            height: 10px;
+            border-radius: 5px;
+            padding: 5px 5px;
+            margin: 0px 1px;
+            line-height: 40px;
+            background: #EEEEEE;
+            text-align: middle;
+            vertical-align: middle;
+            border: 1px #00F solid;
+            box-shadow:2px 2px 5px rgba(20%,20%,20%,0.8);
+            user-select: none;
+            cursor: pointer;
+        }
+        .addTagIcon:hover{
+            border: 2px solid;
+        }
+        .addTagIcon:active{
+            font-size: 14px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>editTag</title>
+</head>
+<body class="mainCSS">
+{% if action == 'edit' or action == 'editAdd' or action == 'editDelete' or action == 'editChange' %}
+    <div style="border:solid 1px #999;width:93%;padding:5px;border-radius:5px;">
+        {% for tag in range(0, len(allTag)) %}
+            <span class="editDeleteTag">
+                <div class="deleteTagIcon" onclick="editDeleteTagFromDB('{{allTag[tag]}}')">✖</div>
+                <input id="tag_{{tag}}" type="text" class="editTagInput" value="{{allTag[tag]}}" name="{{allTag[tag]}}" oninput="inputChanged(this.id)" style="font-family:'Noto Sans TC',sans-serif;">
+                <div id="tagChangeIcon_{{tag}}" class="changeTagIcon" onclick="editChangeTagFromDB('{{tag}}', '{{allTag[tag]}}')">✔</div>
+                &nbsp;
+            </span>
+        {% end %}
+        <center style="vertical-align: middle;">
+            <input class="textBox" type="text" id="newTagFromEdit" style="height:15px; width:50%; border-radius:8px;">
+            <span onclick="editAddNewTagToDB('{{id}}', '')" class="addTagIcon">新增標籤</span>
+        </center>
+    </div>
+{% elif action == 'showAllTag' %}
+    {% for tag in allTag %}
+        <a class="tagBackGround" href="index?searchVideo={{tag}}" style="text-decoration:none;">{{tag}}</a>
+    {% end %}
+
+{% else %}
+    {% for tag in range(0, len(allTag)) %}
+        {% if allTag[tag] in videoTagList %}
+            <span class="tagBackGround" style="background:#FFD1BB;" onclick="deleteVideoTag('{{id}}', '{{videoPath}}','{{allTag[tag]}}')">{{allTag[tag]}}</span>
+        {% else %}
+            <span class="tagBackGround" onclick="addVideoTag('{{id}}', '{{videoPath}}','{{allTag[tag]}}')">{{allTag[tag]}}</span>
+        {% end %}
+    {% end %}
+    <center style="vertical-align: middle;">
+        <input class="textBox" type="text" id="newTagFromVideo" style="height:15px; width:50%; border-radius:8px;" autocomplete="off">
+        <span onclick="addNewTagToDB('{{id}}', '{{videoPath}}')" class="addTagIcon">新增標籤</span>
+    </center>
+
+    <span style="color:#000; font-size:1px; opacity:0.01;">
+    {% if videoTagList == '' %}
+        {{ tagNum = 0 }}
+    {% else %}
+        {{ tagNum = len(videoTagList) }}
+    {% end %}
+    <tagId>{{id}}</tagId>
+    <tagNum>{{tagNum}}</tagNum>
+    <span ID="tagList">{{videoTagList}}</span>
+    </span>
+{% end %}
+
+</body>
+</html>
