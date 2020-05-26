@@ -12,7 +12,11 @@ I designed this software to manage my hundreds of videos, and it works very well
 
 ## Usage
 
-You can run the "SecretCubeWeb.py" to start this program
+1. Run the "SecretCubeWeb.py" to start this program
+2. Open browser and goto "localhost:8888/index"
+3. Press the "新增影片" button
+4. Add folder that you want scan to the SecretCube
+5. Add/Delete/Edit the tag on your Video
 
 <center><img src="https://github.com/TripleC-Light/SecretCube/blob/master/static/index.png?raw=true" width=690></center>
 
