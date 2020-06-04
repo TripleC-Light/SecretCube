@@ -16,7 +16,9 @@ I designed this software to manage my hundreds of videos, and it works very well
 2. Open browser and goto "localhost:8888/index"
 3. Press the "新增影片" button
 4. Add folder that you want scan to the SecretCube
-5. Add/Delete/Edit the tag on your Video
+5. Press "新增標籤" to add a tag on your video
+6. After add tag, you can Delete/Edit the tag on your Video now
+7. Use search bar to search your video
 
 <center><img src="https://github.com/TripleC-Light/SecretCube/blob/master/static/index.png?raw=true" width=690></center>
 
